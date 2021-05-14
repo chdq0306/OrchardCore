@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using OrchardCore.Users.Models;
 using YesSql.Indexes;
 
@@ -14,6 +15,10 @@ namespace OrchardCore.Users.Indexes
 
     public class UserIndexProvider : IndexProvider<User>
     {
+        public UserIndexProvider(IOptions<UserOptions> userOptions)
+        {
+            CollectionName = userOptions.Value.UserCollection;
+        }
         public override void Describe(DescribeContext<User> context)
         {
             context.For<UserIndex>()

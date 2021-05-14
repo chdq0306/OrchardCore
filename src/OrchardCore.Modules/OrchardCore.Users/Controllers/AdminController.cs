@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Notify;
@@ -46,6 +47,8 @@ namespace OrchardCore.Users.Controllers
         private readonly IHtmlLocalizer H;
         private readonly IStringLocalizer S;
 
+        private readonly string _userCollection;
+
         public AdminController(
             IDisplayManager<User> userDisplayManager,
             IDisplayManager<UserIndexOptions> userOptionsDisplayManager,
@@ -61,7 +64,7 @@ namespace OrchardCore.Users.Controllers
             IShapeFactory shapeFactory,
             IHtmlLocalizer<AdminController> htmlLocalizer,
             IStringLocalizer<AdminController> stringLocalizer,
-            IUpdateModelAccessor updateModelAccessor)
+            IUpdateModelAccessor updateModelAccessor,IOptions<UserOptions> userOptions)
         {
             _userDisplayManager = userDisplayManager;
             _userOptionsDisplayManager = userOptionsDisplayManager;
@@ -80,6 +83,8 @@ namespace OrchardCore.Users.Controllers
             New = shapeFactory;
             H = htmlLocalizer;
             S = stringLocalizer;
+
+            _userCollection = userOptions.Value.UserCollection;
         }
 
         public async Task<ActionResult> Index(UserIndexOptions options, PagerParameters pagerParameters)
@@ -204,7 +209,7 @@ namespace OrchardCore.Users.Controllers
 
             if (itemIds?.Count() > 0)
             {
-                var checkedUsers = await _session.Query<User, UserIndex>().Where(x => x.UserId.IsIn(itemIds)).ListAsync();
+                var checkedUsers = await _session.Query<User, UserIndex>(_userCollection).Where(x => x.UserId.IsIn(itemIds)).ListAsync();
 
                 // Bulk actions require the ManageUsers permission on all the checked users.
                 // To prevent html injection we authorize each user before performing any operations.

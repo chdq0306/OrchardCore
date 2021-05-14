@@ -6,6 +6,7 @@ namespace OrchardCore.Users
         private string _logoffPath = "Users/LogOff";
         private string _changePasswordUrl = "ChangePassword";
         private string _externalLoginsUrl = "ExternalLogins";
+        private string _userCollection = "User";
 
         public string LoginPath
         {
@@ -29,6 +30,11 @@ namespace OrchardCore.Users
         {
             get => _externalLoginsUrl;
             set => _externalLoginsUrl = value.Trim(' ', '/');
+        }
+        public string UserCollection
+        {
+            get => _userCollection;
+            set => _userCollection = value;
         }
     }
 }

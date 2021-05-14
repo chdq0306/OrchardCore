@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using OrchardCore.Admin;
+using OrchardCore.Data;
 using OrchardCore.Data.Migration;
 using OrchardCore.Deployment;
 using OrchardCore.DisplayManagement;
@@ -127,6 +128,13 @@ namespace OrchardCore.Users
             {
                 var configuration = ShellScope.Services.GetRequiredService<IShellConfiguration>();
                 configuration.GetSection("OrchardCore_Users").Bind(userOptions);
+            });
+
+            //设置一下用户模块的yessql-collection
+            services.Configure<StoreCollectionOptions>((o) =>
+            {
+                var userOptions = ShellScope.Services.GetRequiredService<IOptions<UserOptions>>();
+                o.Collections.Add(userOptions.Value.UserCollection);
             });
 
             // Add ILookupNormalizer as Singleton because it is needed by UserIndexProvider

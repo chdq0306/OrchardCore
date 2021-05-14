@@ -1,5 +1,6 @@
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using OrchardCore.Users.Models;
 using YesSql.Indexes;
 
@@ -15,9 +16,10 @@ namespace OrchardCore.Users.Indexes
     {
         private readonly ILookupNormalizer _keyNormalizer;
 
-        public UserByRoleNameIndexProvider(ILookupNormalizer keyNormalizer)
+        public UserByRoleNameIndexProvider(ILookupNormalizer keyNormalizer, IOptions<UserOptions> userOptions)
         {
             _keyNormalizer = keyNormalizer;
+            CollectionName = userOptions.Value.UserCollection;
         }
 
         public override void Describe(DescribeContext<User> context)

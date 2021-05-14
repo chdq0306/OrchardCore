@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OrchardCore.Modules;
 using OrchardCore.Security.Services;
 using OrchardCore.Users.Handlers;
@@ -33,6 +34,7 @@ namespace OrchardCore.Users.Services
         private readonly IUserIdGenerator _userIdGenerator;
         private readonly ILogger _logger;
         private readonly IDataProtectionProvider _dataProtectionProvider;
+        private readonly string _userCollection;
 
         public UserStore(ISession session,
             IRoleService roleService,
@@ -40,7 +42,8 @@ namespace OrchardCore.Users.Services
             IUserIdGenerator userIdGenerator,
             ILogger<UserStore> logger,
             IEnumerable<IUserEventHandler> handlers,
-            IDataProtectionProvider dataProtectionProvider)
+            IDataProtectionProvider dataProtectionProvider,
+            IOptions<UserOptions> userOptions)
         {
             _session = session;
             _roleService = roleService;
@@ -49,6 +52,8 @@ namespace OrchardCore.Users.Services
             _logger = logger;
             _dataProtectionProvider = dataProtectionProvider;
             Handlers = handlers;
+
+            _userCollection = userOptions.Value.UserCollection;
         }
         public IEnumerable<IUserEventHandler> Handlers { get; private set; }
 
@@ -87,7 +92,7 @@ namespace OrchardCore.Users.Services
             {
                 var attempts = 10;
 
-                while (await _session.QueryIndex<UserIndex>(x => x.UserId == newUserId).CountAsync() != 0)
+                while (await _session.QueryIndex<UserIndex>(x => x.UserId == newUserId, _userCollection).CountAsync() != 0)
                 {
                     if (attempts-- == 0)
                     {
@@ -99,7 +104,7 @@ namespace OrchardCore.Users.Services
 
                 newUser.UserId = newUserId;
 
-                _session.Save(user);
+                _session.Save(user, _userCollection);
 
                 await _session.SaveChangesAsync();
 
@@ -123,7 +128,7 @@ namespace OrchardCore.Users.Services
                 throw new ArgumentNullException(nameof(user));
             }
 
-            _session.Delete(user);
+            _session.Delete(user, _userCollection);
 
             try
             {
@@ -142,12 +147,12 @@ namespace OrchardCore.Users.Services
 
         public async Task<IUser> FindByIdAsync(string userId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _session.Query<User, UserIndex>(u => u.UserId == userId).FirstOrDefaultAsync();
+            return await _session.Query<User, UserIndex>(u => u.UserId == userId, _userCollection).FirstOrDefaultAsync();
         }
 
         public async Task<IUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _session.Query<User, UserIndex>(u => u.NormalizedUserName == normalizedUserName).FirstOrDefaultAsync();
+            return await _session.Query<User, UserIndex>(u => u.NormalizedUserName == normalizedUserName, _userCollection).FirstOrDefaultAsync();
         }
 
         public Task<string> GetNormalizedUserNameAsync(IUser user, CancellationToken cancellationToken = default(CancellationToken))
@@ -211,7 +216,7 @@ namespace OrchardCore.Users.Services
                 throw new ArgumentNullException(nameof(user));
             }
 
-            _session.Save(user);
+            _session.Save(user, _userCollection);
 
             var context = new UserContext(user);
             await Handlers.InvokeAsync((handler, context) => handler.UpdatedAsync(context), context, _logger);
@@ -330,7 +335,7 @@ namespace OrchardCore.Users.Services
 
         public async Task<IUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
-            return await _session.Query<User, UserIndex>(u => u.NormalizedEmail == normalizedEmail).FirstOrDefaultAsync();
+            return await _session.Query<User, UserIndex>(u => u.NormalizedEmail == normalizedEmail, _userCollection).FirstOrDefaultAsync();
         }
 
         public Task<string> GetNormalizedEmailAsync(IUser user, CancellationToken cancellationToken)
@@ -427,7 +432,7 @@ namespace OrchardCore.Users.Services
                 throw new ArgumentNullException(nameof(normalizedRoleName));
             }
 
-            var users = await _session.Query<User, UserByRoleNameIndex>(u => u.RoleName == normalizedRoleName).ListAsync();
+            var users = await _session.Query<User, UserByRoleNameIndex>(u => u.RoleName == normalizedRoleName, _userCollection).ListAsync();
             return users == null ? new List<IUser>() : users.ToList<IUser>();
         }
 
@@ -457,7 +462,7 @@ namespace OrchardCore.Users.Services
 
         public async Task<IUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            return await _session.Query<User, UserByLoginInfoIndex>(u => u.LoginProvider == loginProvider && u.ProviderKey == providerKey).FirstOrDefaultAsync();
+            return await _session.Query<User, UserByLoginInfoIndex>(u => u.LoginProvider == loginProvider && u.ProviderKey == providerKey, _userCollection).FirstOrDefaultAsync();
         }
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(IUser user, CancellationToken cancellationToken)
@@ -557,7 +562,7 @@ namespace OrchardCore.Users.Services
             if (claim == null)
                 throw new ArgumentNullException(nameof(claim));
 
-            var users = await _session.Query<User, UserByClaimIndex>(uc => uc.ClaimType == claim.Type && uc.ClaimValue == claim.Value).ListAsync();
+            var users = await _session.Query<User, UserByClaimIndex>(uc => uc.ClaimType == claim.Type && uc.ClaimValue == claim.Value, _userCollection).ListAsync();
 
             return users.Cast<IUser>().ToList();
         }
