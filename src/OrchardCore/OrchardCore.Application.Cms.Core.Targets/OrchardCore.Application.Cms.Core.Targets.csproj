@@ -30,6 +30,7 @@
   -->
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TTSCore.Modules\TTSCore.Org\TTSCore.Org.csproj" />
     <ProjectReference Include="..\OrchardCore.Application.Targets\OrchardCore.Application.Targets.csproj" PrivateAssets="none" />
 
     <!--
