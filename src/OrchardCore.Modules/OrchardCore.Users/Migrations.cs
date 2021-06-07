@@ -210,13 +210,13 @@ namespace OrchardCore.Users
         public int UpdateFrom10()
         {
             SchemaBuilder.AlterIndexTable<UserIndex>(table => table
-                .AddColumn<bool>(nameof(UserIndex.IsLockoutEnabled), c => c.NotNull().WithDefault(false)));
+                .AddColumn<bool>(nameof(UserIndex.IsLockoutEnabled), c => c.NotNull().WithDefault(false)),_userCollection);
 
             SchemaBuilder.AlterIndexTable<UserIndex>(table => table
-                .AddColumn<DateTime?>(nameof(UserIndex.LockoutEndUtc), c => c.Nullable()));
+                .AddColumn<DateTime?>(nameof(UserIndex.LockoutEndUtc), c => c.Nullable()), _userCollection);
 
             SchemaBuilder.AlterIndexTable<UserIndex>(table => table
-                .AddColumn<int>(nameof(UserIndex.AccessFailedCount), c => c.NotNull().WithDefault(0)));
+                .AddColumn<int>(nameof(UserIndex.AccessFailedCount), c => c.NotNull().WithDefault(0)), _userCollection);
 
             return 11;
         }      
