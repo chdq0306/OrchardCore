@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OrchardCore.DisplayManagement;
 using OrchardCore.DisplayManagement.ModelBinding;
@@ -43,6 +44,7 @@ namespace OrchardCore.Users.Controllers
         private readonly IUsersAdminListQueryService _usersAdminListQueryService;
         private readonly IUpdateModelAccessor _updateModelAccessor;
         private readonly IShapeFactory _shapeFactory;
+        private readonly ILogger _logger;
 
         private readonly dynamic New;
         private readonly IHtmlLocalizer H;
@@ -63,6 +65,7 @@ namespace OrchardCore.Users.Controllers
             INotifier notifier,
             ISiteService siteService,
             IShapeFactory shapeFactory,
+            ILogger<AccountController> logger,
             IHtmlLocalizer<AdminController> htmlLocalizer,
             IStringLocalizer<AdminController> stringLocalizer,
             IUpdateModelAccessor updateModelAccessor,IOptions<UserOptions> userOptions)
@@ -80,6 +83,7 @@ namespace OrchardCore.Users.Controllers
             _usersAdminListQueryService = usersAdminListQueryService;
             _updateModelAccessor = updateModelAccessor;
             _shapeFactory = shapeFactory;
+            _logger = logger;
 
             New = shapeFactory;
             H = htmlLocalizer;
@@ -533,6 +537,43 @@ namespace OrchardCore.Users.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Unlock(string id)
+        {
+            if (!await _authorizationService.AuthorizeAsync(User, Permissions.ManageUsers))
+            {
+                return Forbid();
+            }
+
+            var user = await _userManager.FindByIdAsync(id) as User;
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await _userManager.ResetAccessFailedCountAsync(user);
+            var result = await _userManager.SetLockoutEndDateAsync(user, null);
+
+            if (result.Succeeded)
+            {                
+                _notifier.Success(H["User unlocked successfully."]);
+            }
+            else
+            {
+                await _session.CancelAsync();
+
+                _notifier.Error(H["Could not unlock the user."]);
+
+                foreach (var error in result.Errors)
+                {
+                    _logger.LogWarning(error.Description);
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System;
 using Microsoft.Extensions.Options;
 using OrchardCore.Data.Migration;
 using OrchardCore.Users.Indexes;
@@ -26,6 +27,9 @@ namespace OrchardCore.Users
                 .Column<string>("NormalizedUserName") // TODO These should have defaults. on SQL Server they will fall at 255. Exceptions are currently thrown if you go over that.
                 .Column<string>("NormalizedEmail")
                 .Column<bool>("IsEnabled", c => c.NotNull().WithDefault(true))
+                .Column<bool>("IsLockoutEnabled", c => c.NotNull().WithDefault(false))
+                .Column<DateTime?>("LockoutEndUtc", c => c.Nullable())
+                .Column<int>("AccessFailedCount", c => c.NotNull().WithDefault(0))
                 .Column<string>("UserId"),_userCollection
             );
 
@@ -35,7 +39,10 @@ namespace OrchardCore.Users
                     "UserId",
                     "NormalizedUserName",
                     "NormalizedEmail",
-                    "IsEnabled"),_userCollection
+                    "IsEnabled",
+                    "IsLockoutEnabled",
+                    "LockoutEndUtc",
+                    "AccessFailedCount"),_userCollection
             );
 
             SchemaBuilder.CreateReduceIndexTable<UserByRoleNameIndex>(table => table
@@ -73,7 +80,7 @@ namespace OrchardCore.Users
             );
 
             // Shortcut other migration steps on new content definition schemas.
-            return 10;
+            return 11;
         }
 
         // This code can be removed in a later version.
@@ -166,7 +173,10 @@ namespace OrchardCore.Users
                     "UserId",
                     "NormalizedUserName",
                     "NormalizedEmail",
-                    "IsEnabled"),_userCollection
+                    "IsEnabled",
+                    "IsLockoutEnabled",
+                    "LockoutEndUtc",
+                    "AccessFailedCount"),_userCollection
             );
 
             SchemaBuilder.AlterIndexTable<UserByLoginInfoIndex>(table => table
@@ -185,7 +195,7 @@ namespace OrchardCore.Users
 
             return 9;
         }
-
+        
         // This code can be removed in a later version.
         public int UpdateFrom9()
         {
@@ -196,5 +206,19 @@ namespace OrchardCore.Users
 
             return 10;
         }
+        
+        public int UpdateFrom10()
+        {
+            SchemaBuilder.AlterIndexTable<UserIndex>(table => table
+                .AddColumn<bool>(nameof(UserIndex.IsLockoutEnabled), c => c.NotNull().WithDefault(false)));
+
+            SchemaBuilder.AlterIndexTable<UserIndex>(table => table
+                .AddColumn<DateTime?>(nameof(UserIndex.LockoutEndUtc), c => c.Nullable()));
+
+            SchemaBuilder.AlterIndexTable<UserIndex>(table => table
+                .AddColumn<int>(nameof(UserIndex.AccessFailedCount), c => c.NotNull().WithDefault(0)));
+
+            return 11;
+        }      
     }
 }
