@@ -18,7 +18,7 @@ namespace OrchardCore.Resources
         private const string cloudflareUrl = "https://cdnjs.cloudflare.com/ajax/libs/";
         // Versions
         private const string codeMirrorVersion = "5.61.1";
-        private const string monacoEditorVersion = "0.24.0";
+        private const string monacoEditorVersion = "0.25.1";
         // URLs
         private const string codeMirrorUrl = cloudflareUrl + "codemirror/" + codeMirrorVersion + "/";
 
@@ -376,7 +376,7 @@ namespace OrchardCore.Resources
                 .DefineStyle("trumbowyg")
                 .SetUrl("~/OrchardCore.Resources/Styles/trumbowyg.min.css", "~/OrchardCore.Resources/Styles/trumbowyg.css")
                 .SetCdn("https://cdn.jsdelivr.net/npm/trumbowyg@2.24.0/dist/ui/trumbowyg.min.css", "https://cdn.jsdelivr.net/npm/trumbowyg@2.24.0/dist/ui/trumbowyg.css")
-                .SetCdnIntegrity("sha384-SFeSoDnGCqwq9pGDKTu07ju9Jvj+/Rphyn6ZOrFEAWv/39BDsEsmvq/E55Jym2qW", "sha384-VDzdVRx3LkvZ4Nu0K+uMjtsQcjVfwyq7QzO/2k848iRdPLYFWtkaLVhmKCMmDICs")
+                .SetCdnIntegrity("sha384-sDSBrKjdISYgWIfzUXc081g55jLgJ35GfF3VrZ+XTIICWDA2M9iA0Qob+ZdW42nO", "sha384-9Ux1/6qkS3ih4yrz5qLiFulZNjhSCVqWw5RFarKi+byXqX6QT0iLxQnkFOMs7H2w")
                 .SetVersion("2.24.0");
 
             manifest
