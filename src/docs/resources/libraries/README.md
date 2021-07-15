@@ -24,13 +24,13 @@ The below table lists the different .NET libraries used in Orchard Core:
 | [MiniProfiler](https://github.com/MiniProfiler/dotnet) | A simple but effective mini-profiler for ASP.NET (and Core) websites | 4.2.22 | [MIT](https://github.com/MiniProfiler/dotnet/blob/main/LICENSE.txt) |
 | [Moq](https://github.com/moq/moq) | The most popular and friendly mocking framework for .NET. | 4.16.1 | [MIT](https://github.com/moq/moq/blob/main/LICENSE) |
 | [NCrontab](https://github.com/atifaziz/NCrontab) | Crontab for .NET | 3.3.1 | [Apache-2.0](https://github.com/atifaziz/NCrontab/blob/master/COPYING.txt) |
-| [NLog.Web.AspNetCore](https://github.com/NLog/NLog.Web/tree/master/src/NLog.Web.AspNetCore) | NLog integration for ASP.NET. | 4.12.0 | [BSD-3-Clause](https://github.com/NLog/NLog.Web/blob/master/LICENSE) |
+| [NLog.Web.AspNetCore](https://github.com/NLog/NLog.Web/tree/master/src/NLog.Web.AspNetCore) | NLog integration for ASP.NET. | 4.13.0 | [BSD-3-Clause](https://github.com/NLog/NLog.Web/blob/master/LICENSE) |
 | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) | Json.NET is a popular high-performance JSON framework for .NET | 13.0.1 | [MIT](https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md) |
 | [Noda Time](https://github.com/nodatime/nodatime) | A better date and time API for .NET. | 3.0.5| [Apache-2.0](https://github.com/nodatime/nodatime/blob/master/LICENSE.txt) |
-| [OpenIddict](https://github.com/openiddict/openiddict-core) | Versatile OpenID Connect stack for ASP.NET Core. | 3.0.5 | [Apache-2.0](https://github.com/openiddict/openiddict-core/blob/dev/LICENSE.md)) |
+| [OpenIddict](https://github.com/openiddict/openiddict-core) | Versatile OpenID Connect stack for ASP.NET Core. | 3.1.0 | [Apache-2.0](https://github.com/openiddict/openiddict-core/blob/dev/LICENSE.md)) |
 | [Serilog.AspNetCore](https://github.com/serilog/serilog-aspnetcore) | Serilog integration for ASP.NET Core. | 4.1.0 | [Apache-2.0](https://github.com/serilog/serilog-aspnetcore/blob/dev/LICENSE) |
 | [Shortcodes](https://github.com/sebastienros/shortcodes) | Shortcodes processor for .NET. | 1.3.0 | [MIT](https://github.com/sebastienros/shortcodes/blob/dev/LICENSE) |
-| [YesSql](https://github.com/sebastienros/yessql) | .NET document database working on any RDBMS. | 3.0.6 | [MIT](https://github.com/sebastienros/yessql/blob/dev/LICENSE) |
+| [YesSql](https://github.com/sebastienros/yessql) | .NET document database working on any RDBMS. | 3.0.7 | [MIT](https://github.com/sebastienros/yessql/blob/dev/LICENSE) |
 | [ZString](https://github.com/Cysharp/ZString) | Zero Allocation StringBuilder for .NET Core and Unity. | 2.4.2 | [MIT](https://github.com/Cysharp/ZString/blob/master/LICENSE) |
 
 The below table lists the different libraries used as Resources:
@@ -75,7 +75,7 @@ The below table lists the different Tests libraries:
 | Library | Usage | Version | License |
 |--- | --- | --- | --- |
 | [BenchmarkDotNet ](https://github.com/dotnet/BenchmarkDotNet) | Powerful .NET library for benchmarking. | 0.13.0 | [MIT](https://github.com/dotnet/BenchmarkDotNet/blob/master/LICENSE.md) |
-| [Cypress](https://github.com/cypress-io/cypress) | Fast, easy and reliable testing for anything that runs in a browser. | 7.6.0 | [MIT](https://github.com/cypress-io/cypress/blob/develop/LICENSE) |
+| [Cypress](https://github.com/cypress-io/cypress) | Fast, easy and reliable testing for anything that runs in a browser. | 7.7.0 | [MIT](https://github.com/cypress-io/cypress/blob/develop/LICENSE) |
 | [Cypress Orchard](https://www.npmjs.com/package/cypress-orchardcore) | A collection of cypress commands for Orchard Core. | 0.4.5 | MIT |
 | [VS Test SDK](https://github.com/microsoft/vstest/) | Visual Studio Test Platform. | 16.10.0 | [MIT](https://github.com/microsoft/vstest/blob/master/LICENSE) |
 | [xUnit](https://github.com/xunit/xunit) | Free, open source, community-focused unit testing tool for the .NET Framework. | 2.4.1 | [MIT](https://github.com/xunit/xunit/blob/main/LICENSE) |
